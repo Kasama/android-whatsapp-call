@@ -40,6 +40,16 @@ def check_call_button(xml):
     return False
 
 
+def check_answered_call(xml):
+    video_button = xml.xpath(
+        '//node[@resource-id="com.whatsapp:id/toggle_video_btn"]')
+
+    if len(video_button) == 0:
+        return False
+
+    return video_button[0].get('enabled') == "true"
+
+
 def do_call():
     screen = get_screen()
     call_button = check_call_button(screen)
@@ -49,8 +59,8 @@ def do_call():
         x, y = call_button
         print(f"call button found at {x} {y}. Calling...")
         tap(x, y)
+    return check_answered_call(screen)
 
 
-while True:
-    do_call()
+while not do_call():
     time.sleep(0.1)
